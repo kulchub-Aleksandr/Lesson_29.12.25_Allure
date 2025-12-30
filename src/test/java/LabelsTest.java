@@ -1,51 +1,31 @@
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.logevents.SelenideLogger;
-import io.qameta.allure.selenide.AllureSelenide;
+import io.qameta.allure.*;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.codeborne.selenide.Selectors.withText;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
-import static io.qameta.allure.Allure.step;
-import static org.openqa.selenium.By.linkText;
-
-public class StepsTest {
+public class LabelsTest {
 
     private static final String REPOSITORY = "kulchub-Aleksandr/Lesson_25.12.25_files";
     private static final int ISSUE = 1;
 
     @Test
-    public void testLambdaStep() {
-        SelenideLogger.addListener("allure", new AllureSelenide());
-
-        step("Открываем главную страницу", () -> {
-            open("https://github.com/?ysclid=mjsg9zhk1o590780091");
-        });
-        step("Ищем репозиторий " + REPOSITORY, () -> {
-            $(".header-search-button").click();
-            $("#query-builder-test").sendKeys(REPOSITORY);
-            $("#query-builder-test").submit();
-        });
-        step("Кликаем по ссылке репозитория " + REPOSITORY, () -> {
-            $(linkText(REPOSITORY)).click();
-        });
-        step("Открываем таб Issues", () -> {
-            $("#issues-tab").click();
-        });
-        step("Проверяем наличие Issue с номером " + ISSUE, () -> {
-            $(withText("#" + ISSUE)).should(Condition.exist);
-        });
+    @Feature("Issue в репозитории")
+    @Story("Создание Issue")
+    @Owner("User")
+    @Severity(SeverityLevel.BLOCKER)
+    @Link(value = "Testing", url = "https://testing.github.com")
+    @DisplayName("Создание Issue для авторизованного пользователя")
+    public void testStaticLabels() {
 
     }
 
     @Test
-    public void testAnnotatedStep() {
-        SelenideLogger.addListener("allure", new AllureSelenide());
-        WepSteps steps = new WepSteps();
-        steps.openMainPage();
-        steps.searchForRepository(REPOSITORY);
-        steps.clickOnRepositoryLink(REPOSITORY);
-        steps.openIssuesTab();
-        steps.shouldSeeIssueWithNumber(ISSUE);
+    public void testDynamicLabels() {
+        Allure.getLifecycle().updateTestCase(
+                t -> t.setName("Создание Issue для авторизованного пользователя"));
+        Allure.feature("Issue в репозитории");
+        Allure.story("Создание Issue");
+        Allure.label("owner", "user");
+        Allure.label("severity", SeverityLevel.CRITICAL.value());
+        Allure.link("Testing", "https://testing.github.com");
     }
 }
