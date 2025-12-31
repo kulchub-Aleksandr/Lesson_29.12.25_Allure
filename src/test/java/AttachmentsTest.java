@@ -24,6 +24,6 @@ public class AttachmentsTest  {
         SelenideLogger.addListener("allure", new AllureSelenide());
         WepSteps steps = new WepSteps();
         steps.openMainPage();
-        steps.takeScreenshot();
+        ScreenshotUtils.takeScreenshot();
     }
 }
